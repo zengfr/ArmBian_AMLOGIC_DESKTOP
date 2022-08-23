@@ -1,4 +1,7 @@
 # Armbian for Amlogic TV Boxes
+# IMPORTANT! forked from ophub/amlogic-s9xxx-armbian
+
+
 
 View Chinese description  |  [查看中文说明](README.cn.md)
 
