@@ -1,0 +1,103 @@
+#==========================================================================
+# Description: Compile the kernel
+# Copyright (C) 2021 https://github.com/unifreq/openwrt_packit
+# Copyright (C) 2021 https://github.com/ophub/amlogic-s9xxx-armbian
+#==========================================================================
+
+name: Compile the kernel
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      kernel_repo:
+        description: "Select the kernel repository"
+        required: false
+        default: "unifreq"
+        type: choice
+        options:
+          - unifreq
+          - kernel.org
+      kernel_version:
+        description: "Select kernel version"
+        required: false
+        default: "5.10.135_5.15.50"
+        type: choice
+        options:
+          - 5.4.210_5.10.135_5.15.50
+          - 5.4.210_5.10.135
+          - 5.10.135_5.15.50
+          - 5.15.50_5.19.1
+          - 5.4.210
+          - 5.10.135
+          - 5.15.50
+          - 5.19.1
+      kernel_auto:
+        description: "Auto use the latest kernel"
+        required: false
+        default: true
+        type: boolean
+      kernel_package:
+        description: "Select compile package list"
+        required: false
+        default: "all"
+        type: choice
+        options:
+          - all
+          - dtbs
+      kernel_sign:
+        description: "Set the kernel custom signature"
+        required: false
+        default: "-ophub"
+      kernel_config:
+        description: "Set the path of kernel .config"
+        required: false
+        default: ""
+
+env:
+  TZ: America/New_York
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Initialization environment
+        id: init
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc 2>/dev/null
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install -y $(curl -fsSL https://is.gd/depend_ubuntu2204_armbian)
+          sudo -E apt-get -qq autoremove --purge
+          sudo -E apt-get -qq clean
+          sudo timedatectl set-timezone "${TZ}"
+          echo "::set-output name=status::success"
+
+      - name: Compile the kernel
+        uses: ophub/amlogic-s9xxx-armbian@main
+        with:
+          build_target: kernel
+          kernel_repo: ${{ github.event.inputs.kernel_repo }}
+          kernel_version: ${{ github.event.inputs.kernel_version }}
+          kernel_auto: ${{ github.event.inputs.kernel_auto }}
+          kernel_package: ${{ github.event.inputs.kernel_package }}
+          kernel_sign: ${{ github.event.inputs.kernel_sign }}
+          kernel_config: ${{ github.event.inputs.kernel_config }}
+
+      - name: Upload Kernel to Release
+        uses: ncipollo/release-action@main
+        if: env.PACKAGED_STATUS == 'success' && !cancelled()
+        with:
+          tag: kernel_${{ env.PACKAGED_OUTPUTTAGS }}
+          artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
+          allowUpdates: true
+          token: ${{ secrets.GH_TOKEN }}
+          body: |
+            The kernel can be used to compile Armbian and OpenWrt.
+            The kernel source code comes from: ${{ github.event.inputs.kernel_repo }}
