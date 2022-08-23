@@ -54,6 +54,7 @@ on:
           - 5.10.135
           - 5.15.50
           - 5.19.1
+          - 5.15.62
       auto_kernel:
         description: "Auto use the latest kernel."
         required: false
@@ -101,22 +102,19 @@ jobs:
           sudo timedatectl set-timezone "${TZ}"
           echo "ARMBIAN_RELEASE=${{ github.event.inputs.set_release }}" >> $GITHUB_ENV
           echo "::set-output name=status::success"
-
       - name: Download source code
         id: down
         run: |
           git clone --depth 1 https://github.com/armbian/build.git
-
       - name: Compile Armbian [ ${{ env.ARMBIAN_RELEASE }} ]
         id: compile
         run: |
           # Compile method and parameter description: https://docs.armbian.com/Developer-Guide_Build-Options
           cd build/
           sudo chmod +x compile.sh
-          sudo ./compile.sh RELEASE=${{ env.ARMBIAN_RELEASE }} BOARD=odroidn2 BRANCH=current BUILD_DESKTOP=no HOST=armbian EXPERT=yes \
+          sudo ./compile.sh RELEASE=${{ env.ARMBIAN_RELEASE }} BOARD=odroidn2 BRANCH=current BUILD_DESKTOP="yes" DESKTOP_ENVIRONMENT="xfce" DESKTOP_ENVIRONMENT_CONFIG_NAME="config_full" DESKTOP_APPGROUPS_SELECTED="browsers editors programming" HOST=armbian EXPERT=yes \
                             BUILD_MINIMAL=no KERNEL_ONLY=no KERNEL_CONFIGURE=no CLEAN_LEVEL=make,debs COMPRESS_OUTPUTIMAGE=sha
           echo "::set-output name=status::success"
-
       - name: Rebuild Armbian for Amlogic s9xxx
         uses: ophub/amlogic-s9xxx-armbian@main
         if: steps.compile.outputs.status == 'success' && !cancelled()
