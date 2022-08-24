@@ -24,36 +24,13 @@ on:
         type: choice
         options:
           - all
-          - s905x3_s905d_s912
-          - a311d
-          - s922x
-          - s922x-n2
-          - s922x-reva
-          - s905x3
-          - s905x2
-          - s905x2-km3
           - s912
-          - s912-m8s
-          - s905d
-          - s905d-ki
-          - s905x
-          - s905w
-          - s905
-          - s905l3a
       armbian_kernel:
         description: "Select kernel version."
         required: false
-        default: "5.10.135_5.15.50"
+        default: "5.15.62"
         type: choice
         options:
-          - 5.4.210_5.10.135_5.15.50
-          - 5.4.210_5.10.135
-          - 5.10.135_5.15.50
-          - 5.15.50_5.19.1
-          - 5.4.210
-          - 5.10.135
-          - 5.15.50
-          - 5.19.1
           - 5.15.62
       auto_kernel:
         description: "Auto use the latest kernel."
@@ -63,7 +40,7 @@ on:
       armbian_size:
         description: "Set armbian rootfs size(Unit: MiB)."
         required: false
-        default: "2560"
+        default: "7000"
       armbian_fstype:
         description: "Select armbian rootfs type."
         required: false
@@ -75,7 +52,7 @@ on:
       armbian_sign:
         description: "Set armbian custom name."
         required: false
-        default: ""
+        default: "Jammy_S912_Desktop"
 
 env:
   TZ: America/New_York
@@ -112,7 +89,7 @@ jobs:
           # Compile method and parameter description: https://docs.armbian.com/Developer-Guide_Build-Options
           cd build/
           sudo chmod +x compile.sh
-          sudo ./compile.sh RELEASE=${{ env.ARMBIAN_RELEASE }} BOARD=khadas-vim2 BRANCH=current BUILD_DESKTOP="yes" DESKTOP_ENVIRONMENT="xfce" DESKTOP_ENVIRONMENT_CONFIG_NAME="config_base" DESKTOP_APPGROUPS_SELECTED="browsers desktop_tools internet programming editors" HOST=armbian EXPERT=yes \
+          sudo ./compile.sh RELEASE=${{ env.ARMBIAN_RELEASE }} BOARD=odroidn2 BRANCH=current BUILD_DESKTOP="yes" DESKTOP_ENVIRONMENT="xfce" DESKTOP_ENVIRONMENT_CONFIG_NAME="config_full" HOST=armbian EXPERT=yes \
                             BUILD_MINIMAL=no KERNEL_ONLY=no KERNEL_CONFIGURE=no CLEAN_LEVEL=make,debs COMPRESS_OUTPUTIMAGE=sha
           echo "::set-output name=status::success"
       - name: Rebuild Armbian for Amlogic s9xxx
