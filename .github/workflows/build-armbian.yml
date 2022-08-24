@@ -116,7 +116,7 @@ jobs:
                             BUILD_MINIMAL=no KERNEL_ONLY=no KERNEL_CONFIGURE=no CLEAN_LEVEL=make,debs COMPRESS_OUTPUTIMAGE=sha
           echo "::set-output name=status::success"
       - name: Rebuild Armbian for Amlogic s9xxx
-        uses: ophub/amlogic-s9xxx-armbian@main
+        uses: d5stick/ArmBian_AMLOGIC_DESKTOP@main
         if: steps.compile.outputs.status == 'success' && !cancelled()
         with:
           build_target: armbian
