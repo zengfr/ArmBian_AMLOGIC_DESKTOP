@@ -112,7 +112,7 @@ jobs:
           # Compile method and parameter description: https://docs.armbian.com/Developer-Guide_Build-Options
           cd build/
           sudo chmod +x compile.sh
-          sudo ./compile.sh RELEASE=${{ env.ARMBIAN_RELEASE }} BOARD=khadas-vim2 BRANCH=current BUILD_DESKTOP="yes" DESKTOP_ENVIRONMENT="gnome" DESKTOP_ENVIRONMENT_CONFIG_NAME="config_full" DESKTOP_APPGROUPS_SELECTED="browsers editors programming" HOST=armbian EXPERT=yes \
+          sudo ./compile.sh RELEASE=${{ env.ARMBIAN_RELEASE }} BOARD=khadas-vim2 BRANCH=current BUILD_DESKTOP="yes" DESKTOP_ENVIRONMENT="gnome" DESKTOP_ENVIRONMENT_CONFIG_NAME="config_full" HOST=armbian EXPERT=yes \
                             BUILD_MINIMAL=no KERNEL_ONLY=no KERNEL_CONFIGURE=no CLEAN_LEVEL=make,debs COMPRESS_OUTPUTIMAGE=sha
           echo "::set-output name=status::success"
       - name: Rebuild Armbian for Amlogic s9xxx
