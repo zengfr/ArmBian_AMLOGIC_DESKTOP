@@ -24,14 +24,14 @@ on:
         type: choice
         options:
           - all
-          - s912
+          - s905l3a
       armbian_kernel:
         description: "Select kernel version."
         required: false
-        default: "5.15.62"
+        default: "5.15.72"
         type: choice
         options:
-          - 5.15.62
+          - 5.15.72
       auto_kernel:
         description: "Auto use the latest kernel."
         required: false
@@ -52,7 +52,7 @@ on:
       armbian_sign:
         description: "Set armbian custom name."
         required: false
-        default: "Jammy_S912_Desktop"
+        default: "Jammy_s905l3a_Desktop_by_zengfr"
 
 env:
   TZ: America/New_York
@@ -90,10 +90,10 @@ jobs:
           cd build/
           sudo chmod +x compile.sh
           sudo ./compile.sh RELEASE=${{ env.ARMBIAN_RELEASE }} BOARD=odroidn2 BRANCH=current BUILD_DESKTOP="yes" DESKTOP_ENVIRONMENT="xfce" DESKTOP_ENVIRONMENT_CONFIG_NAME="config_full" HOST=armbian EXPERT=yes \
-                            BUILD_MINIMAL=no KERNEL_ONLY=no KERNEL_CONFIGURE=no CLEAN_LEVEL=make,debs COMPRESS_OUTPUTIMAGE=sha
+                            BUILD_MINIMAL=no KERNEL_ONLY=no KERNEL_CONFIGURE=no CLEAN_LEVEL=make,debs,cache COMPRESS_OUTPUTIMAGE=sha
           echo "::set-output name=status::success"
       - name: Rebuild Armbian for Amlogic s9xxx
-        uses: d5stick/ArmBian_AMLOGIC_DESKTOP@main
+        uses: zengfr/ArmBian_AMLOGIC_DESKTOP@main
         if: steps.compile.outputs.status == 'success' && !cancelled()
         with:
           build_target: armbian

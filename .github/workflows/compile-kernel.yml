@@ -21,7 +21,7 @@ on:
       kernel_version:
         description: "Select kernel version"
         required: false
-        default: "5.10.135_5.15.50"
+        default: "5.15.72"
         type: choice
         options:
           - 5.4.210_5.10.135_5.15.50
@@ -33,6 +33,7 @@ on:
           - 5.15.50
           - 5.19.1
           - 5.15.62
+          - 5.15.72
       kernel_auto:
         description: "Auto use the latest kernel"
         required: false
