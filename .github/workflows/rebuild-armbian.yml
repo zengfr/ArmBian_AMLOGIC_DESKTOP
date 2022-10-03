@@ -16,7 +16,7 @@ on:
       armbian_soc:
         description: "Select Amlogic SoC."
         required: false
-        default: "s905x3_s905d_s912"
+        default: "s905l3a"
         type: choice
         options:
           - all
@@ -39,7 +39,7 @@ on:
       armbian_kernel:
         description: "Select kernel version."
         required: false
-        default: "5.10.135_5.15.50"
+        default: "5.15.72"
         type: choice
         options:
           - 5.4.210_5.10.135_5.15.50
@@ -50,6 +50,8 @@ on:
           - 5.10.135
           - 5.15.50
           - 5.19.1
+          - 5.15.62
+          - 5.15.72
       auto_kernel:
         description: "Auto use the latest kernel."
         required: false
@@ -70,7 +72,7 @@ on:
       armbian_sign:
         description: "Set armbian custom name."
         required: false
-        default: ""
+        default: "-qq362505707-desktop"
 
 env:
   TZ: America/New_York
@@ -100,7 +102,7 @@ jobs:
           armbian_url="${{ github.event.inputs.armbian_url }}"
           if  [[ -z "${armbian_url}" ]]; then
               armbian_site="https://armbian.tnahosting.net/dl/odroidn2/archive/"
-              armbian_name="Armbian.*jammy.*.img.xz"
+              armbian_name="Armbian.*jammy.*gnome_desktop.img.xz"
               armbian_file=$(curl -s "${armbian_site}" | grep -oE "${armbian_name}" | head -n 1)
               if [[ -n "${armbian_file}" ]]; then
                   armbian_url="${armbian_site}${armbian_file}"
